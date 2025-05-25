@@ -1,0 +1,49 @@
+Algorytmy Ewolucyjne - Projekt 2
+
+Stosując algorytm genetyczny znajdź rozwiązanie problemu plecakowego:
+maxx​∑i=1n​pi​xi​
+∑i=1n​Wi​xi​≤W
+pi​>0,wi​>0,xi​∈{0,1}
+
+1/ Założenia:
+liczba przedmiotów: n=32
+do generacji przedmiotów wykorzystać Skrypt 1; w przypadku wykonania projektu w parze należy wybrać niższy numer albumu; wagi przedmiotów są losowane z rozkładem równomiernym z przedziału <0.1, 1> z dokładnością do 0.1, a wartości p przedmiotów są losowane z rozkładem równomiernym z przedziału <1,100> z dokładnością do 1
+
+maksymalna waga plecaka: W=30% wagi wszystkich przedmiotów
+
+dozwolone jest korzystanie ze środowiska MATLAB wraz z dodatkiem Global Optimization Toolbox. Wykonanie projektu w Pythonie wymaga uprzedniej konsultacji z prowadzącym projekt.
+
+
+2/ Dobrać optymalne parametry algorytmu i metodę selekcji
+
+
+3/ Wyniki przedstaw w postaci sprawozdania (plik DOCX programu MS Word lub PDF) z wynikami obliczeń.
+Sprawozdanie powinno zawierać:
+Listę wszystkich przedmiotów wraz z ich wagami i wartościami; wektor binarny stanowiący rozwiązanie problemu; sumaryczną wagę oraz wartość przedmiotów wybranych do plecaka.
+Wartości:
+liczności populacji,
+liczności potomków elitarnych, skrzyżowanych i zmutowanych,
+prawdopodobieństw mutacji
+Kryteria doboru optymalnych parametrów, np. warunku zatrzymania algorytmu
+Dla każdego uruchomienia wykres wartości funkcji celu (min., śr., max., wariancja) w funkcji numeru pokolenia.
+Sprawozdanie nie powinno zawierać niepotrzebnych informacji - takich jak np. teoria i opis metod optymalizacji.
+Sprawozdanie w formacie DOCX lub PDF wraz z napisanymi przez siebie skryptami należy spakować do archiwum (7z/zip/rar/tar) i umieścić na serwerze STUDIA na stronie przedmiotu AE w sekcji Sprawozdania. Plik sprawozdania (DOCX/PDF) powinien mieć nazwę zawierającą imiona i nazwiska jego autorów. Wszyscy członkowie zespołu powinni umieścić na serwerze STUDIA ten sam plik.
+
+Projekt można wykonać w dwuosobowym zespole lub samodzielnie. Dozwolone jest korzystanie z ogólnodostępnych materiałów pod warunkiem ich prawidłowego zacytowania - dotyczy to zarówno sprawozdania jak i kodu opracowanych skryptów. W przypadku zaistnienia podejrzenia niesamodzielnej pracy sprawozdanie zostanie ocenione negatywnie, a jego autor poproszony o złożenie wyjaśnień.
+
+Termin złożenia sprawozdania: 1 czerwca 2025 r.
+
+Prowadzący: dr inż. Grzegorz Bogdan
+
+Terminy konsultacji: wtorki, 14:15-15:00 oraz czwartki, 16:15-17:00
+Konsultacje prowadzone są stacjonarnie w pokoju 35.
+Skrypt 1 (MATLAB)
+
+Matlab
+
+
+numerAlbumu = 123456; %% Wpisz swój numer albumu
+rng(numerAlbumu);
+N = 32; [cite: 17]
+items(:,1) = round(0.1+0.9*rand(N,1),1); [cite: 17]
+items(:,2) = round(1+99*rand(N,1)); [cite: 17]
