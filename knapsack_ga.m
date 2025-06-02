@@ -4,7 +4,6 @@ clear;
 clc;
 close all;
 
-% --- Sekcja 1: Definicja Problemu i Generacja Przedmiotów ---
 numerAlbumu = 331129;
 rng(numerAlbumu);
 
@@ -18,13 +17,11 @@ items = table(item_weights, item_values, 'VariableNames', {'Waga', 'Wartosc'});
 disp('--- Lista wszystkich przedmiotów ---');
 disp(items);
 
-% Generowanie tabeli LaTeX dla wszystkich przedmiotów
 generateLatexTable(items, 'c:\Users\Kubas\OneDrive\Pulpit\AE2\items_table.tex');
 
 W_max = 0.30 * sum(items.Waga);
 fprintf('\nMaksymalna pojemność plecaka (W): %.2f\n', W_max);
 
-% --- Sekcja 2: Ustawienia Algorytmu Genetycznego ---
 fitnessFunction = @(x) -sum(x' .* items.Wartosc);
 
 Aineq = items.Waga';
@@ -34,7 +31,6 @@ lb = zeros(1, N);
 ub = ones(1, N);
 IntCon = 1:N;
 
-% Parametry algorytmu genetycznego
 populationSize = 100;
 eliteCount = ceil(0.05 * populationSize);
 crossoverFraction = 0.8;
@@ -56,11 +52,9 @@ options = optimoptions('ga', ...
     'PlotFcn', {}, ...
     'OutputFcn', @knapsackOutputFcn);
 
-% --- Sekcja 3: Uruchomienie Algorytmu Genetycznego ---
 assignin('base', 'ga_stats_history', []);
 [solution_x, fval, exitflag, output, final_population, final_scores] = ga(fitnessFunction, N, Aineq, bineq, [], [], lb, ub, [], IntCon, options);
 
-% --- Sekcja 4: Wyświetlanie Wyników ---
 fprintf('\n--- Wyniki Algorytmu Genetycznego ---\n');
 
 if exitflag > 0 || exitflag == 0
@@ -87,7 +81,6 @@ if exitflag > 0 || exitflag == 0
         disp('Żaden przedmiot nie został wybrany.');
     end
 
-    % --- Szczegółowe wyjaśnienie rozwiązania problemu plecakowego ---
     fprintf('\n=== ANALIZA ROZWIĄZANIA PROBLEMU PLECAKOWEGO ===\n');
     fprintf('Problem: Maksymalizacja wartości przedmiotów w plecaku przy ograniczeniu wagowym\n');
     fprintf('Funkcja celu: max Σ(pi * xi), gdzie pi - wartość przedmiotu i, xi ∈ {0,1}\n');
@@ -175,7 +168,6 @@ else
     fprintf('Komunikat: %s\n', output.message);
 end
 
-% --- Sekcja 5: Wykresy statystyk funkcji celu (min, śr, max, wariancja) ---
 ga_stats_history_data = evalin('base', 'ga_stats_history');
 
 if ~isempty(ga_stats_history_data)
@@ -185,7 +177,6 @@ if ~isempty(ga_stats_history_data)
     min_actual_values_pop = -ga_stats_history_data(:,4);
     variance_actual_values_pop = ga_stats_history_data(:,5);
 
-    % Wykres statystyk wartości funkcji celu
     fig1 = figure('Name', 'Statystyki Wartości Funkcji Celu', 'Position', [100, 100, 800, 600]);
     hold on;
     plot(generations, max_actual_values_pop, 'b-', 'LineWidth', 1.5, 'DisplayName', 'Max Wartość w Populacji');
@@ -198,11 +189,9 @@ if ~isempty(ga_stats_history_data)
     legend show;
     grid on;
 
-    % Zapisanie wykresu statystyk
     saveas(fig1, 'c:\Users\Kubas\OneDrive\Pulpit\AE2\statistics_plot.png');
     fprintf('Wykres statystyk zapisany jako: statistics_plot.png\n');
 
-    % Wykres wariancji wartości funkcji celu
     fig2 = figure('Name', 'Wariancja Wartości Funkcji Celu', 'Position', [200, 200, 800, 600]);
     plot(generations, variance_actual_values_pop, 'm-', 'LineWidth', 1.5, 'DisplayName', 'Wariancja Wartości');
     xlabel('Pokolenie');
@@ -211,7 +200,6 @@ if ~isempty(ga_stats_history_data)
     legend show;
     grid on;
 
-    % Zapisanie wykresu wariancji
     saveas(fig2, 'c:\Users\Kubas\OneDrive\Pulpit\AE2\variance_plot.png');
     fprintf('Wykres wariancji zapisany jako: variance_plot.png\n');
 
@@ -241,7 +229,6 @@ function [state, options, optchanged] = knapsackOutputFcn(options, state, flag)
 
     scores = state.Score;
 
-    % Show progress every 10 generations
     if mod(current_generation, 10) == 0
         best_actual_value = -min(scores);
         mean_actual_value = -mean(scores);
@@ -280,7 +267,6 @@ function generateLatexTable(itemsTable, filename)
         return;
     end
 
-    % Nagłówek tabeli LaTeX
     fprintf(fid, '\\begin{table}[h!]\n');
     fprintf(fid, '\\centering\n');
     fprintf(fid, '\\begin{tabular}{|c|c|c|c|}\n');
@@ -288,9 +274,7 @@ function generateLatexTable(itemsTable, filename)
     fprintf(fid, 'Nr & Waga & Wartość & Stosunek V/W \\\\\n');
     fprintf(fid, '\\hline\n');
 
-    % Dane tabeli - fix indexing issue for selected items
     if contains(filename, 'selected')
-        % For selected items, we need to use the original indices
         original_indices = evalin('caller', 'selected_items_indices');
         for i = 1:height(itemsTable)
             ratio = itemsTable.Wartosc(i) / itemsTable.Waga(i);
@@ -298,7 +282,6 @@ function generateLatexTable(itemsTable, filename)
                     original_indices(i), itemsTable.Waga(i), itemsTable.Wartosc(i), ratio);
         end
     else
-        % For all items, use sequential numbering
         for i = 1:height(itemsTable)
             ratio = itemsTable.Wartosc(i) / itemsTable.Waga(i);
             fprintf(fid, '%d & %.1f & %d & %.2f \\\\\n', ...
@@ -306,7 +289,6 @@ function generateLatexTable(itemsTable, filename)
         end
     end
 
-    % Stopka tabeli LaTeX
     fprintf(fid, '\\hline\n');
     fprintf(fid, '\\end{tabular}\n');
     if contains(filename, 'selected')
